@@ -2,15 +2,15 @@ const pty = require('node-pty');
 const COMMANDS = require('./LangCommands.js');
 
 const Repl = {
-  new(language) {
-    return Object.create(this.init(language));
-  },
+  language: null,
+  process: null,
 
   init(language) {
     const command = COMMANDS[language];
     if (command) {
       this.process = pty.spawn(command);
       this.language = language;
+
       console.log(`INITIALIZED ${command}`);
       return this;
     } 
@@ -40,7 +40,8 @@ const Repl = {
   },
 
   kill() {
-    this.process.kill();
+    if (this.process) this.process.kill();
+    this.language = null;
   },
 
   id() {

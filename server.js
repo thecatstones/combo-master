@@ -21,19 +21,26 @@ server.listen(port, () => console.log(`Listening on ${port}...`));
 
 const io = socketIo(server);
 
-let repl = {};
-
 io.on('connection', (socket) => {
 
   socket.on('execRepl', ({ language = 'ruby' } = {}) => {
-    if (language === repl.language) return;
-    repl = Repl.new(language);
+    if (language === Repl.language) return;
+    Repl.kill();
+    Repl.init(language);
   });
 
   socket.on('execute', ({ line }) => {
-    repl.write(`${line}`)
-      .then(data => {
-        io.emit('output', { output: data });
+    Repl.write(`${line}`)
+      .then(output => {
+        io.emit('output', { output });
       });
+  });
+
+  socket.on('disconnect', () => {
+    io.of('/').clients((error, clients) => {
+      if (clients.length === 0) {
+        Repl.kill();
+      }
+    });
   });
 });
