@@ -61,4 +61,8 @@ document.getElementById('terminal').addEventListener('keyup', event => {
 
 document.querySelector('button').addEventListener('click', event => {
   handleButtonPress(event);
-})
+});
+
+var editor = CodeMirror.fromTextArea(myTextarea, {
+  lineNumbers: true,
+});
