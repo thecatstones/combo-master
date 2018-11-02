@@ -24,6 +24,12 @@ const evaluate = (line) => (
   socket.emit('execute', { line })
 );
 
+const handleButtonPress = (event) => {
+  const language = document.querySelector('input').value
+
+  socket.emit('execRepl', { language });
+}
+
 const handleTerminalKeypress = (event) => {
   const textArea = $('.xterm-helper-textarea');
   if (event.target !== textArea) return;
@@ -53,6 +59,9 @@ document.getElementById('terminal').addEventListener('keyup', event => {
   if (key == 'Backspace') return handleBackspaceReleased();
 });
 
+document.querySelector('button').addEventListener('click', event => {
+  handleButtonPress(event);
+});
 
 var editor = CodeMirror.fromTextArea(myTextarea, {
   lineNumbers: true,

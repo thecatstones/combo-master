@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const socketIo = require('socket.io');
 const Repl = require('./repl/Repl.js');
-const languages_commands = require('./repl/languages_commands.js');
 
 const port = process.env.port || 3000;
 
@@ -22,18 +21,26 @@ server.listen(port, () => console.log(`Listening on ${port}...`));
 
 const io = socketIo(server);
 
-let repl = null;
-
 io.on('connection', (socket) => {
+
   socket.on('execRepl', ({ language = 'ruby' } = {}) => {
-    console.log(language);
-    repl = Repl.new(languages_commands[language]);
+    if (language === Repl.language) return;
+    Repl.kill();
+    Repl.init(language);
   });
 
   socket.on('execute', ({ line }) => {
-    repl.write(`${line}`)
-      .then(data => {
-        io.emit('output', { output: data });
+    Repl.write(`${line}`)
+      .then(output => {
+        io.emit('output', { output });
       });
+  });
+
+  socket.on('disconnect', () => {
+    io.of('/').clients((error, clients) => {
+      if (clients.length === 0) {
+        Repl.kill();
+      }
+    });
   });
 });
