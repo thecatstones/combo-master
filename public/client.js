@@ -52,3 +52,8 @@ document.getElementById('terminal').addEventListener('keyup', event => {
   if (key == 'Enter') return handleEnterReleased();
   if (key == 'Backspace') return handleBackspaceReleased();
 });
+
+
+var editor = CodeMirror.fromTextArea(myTextarea, {
+  lineNumbers: true,
+});

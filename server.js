@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('execute', ({ line }) => {
-    repl.write(`${line}\r\n`)
+    repl.write(`${line}`)
       .then(data => {
         io.emit('output', { output: data });
       });
