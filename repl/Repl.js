@@ -14,11 +14,7 @@ const Repl = {
       console.log(`INITIALIZED ${command}`);
       return this;
     } 
-    return null;
-  },
-
-  on(event, callback) {
-    this.process.on(event, callback);
+    throw 'Unknown Language';
   },
 
   write(string) {
